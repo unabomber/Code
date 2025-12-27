@@ -1,0 +1,27 @@
+services:
+  api:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./api:/app
+    command: sh -c "npm i && npm run dev"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - JELLYFIN_BASE_URL=${JELLYFIN_BASE_URL}
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+    ports:
+      - "3000:3000"
+
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./web:/app
+    command: sh -c "npm i && npm run dev -- --host 0.0.0.0"
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
